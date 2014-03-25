@@ -34,7 +34,6 @@ var transferList = [],
 
 neurone.init(configure.concurrent);
 
-
 // prevent default behavior from changing page on dropped file
 window.ondragover = function (e) {
     e.preventDefault();
