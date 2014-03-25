@@ -4,7 +4,7 @@
 /*
  * requirements*/
 //fs
-var file = require('./scripts/fs/fs.js'),
+var file = require('./scripts/fs/file.js'),
     TransferList = require('./scripts/fs/transferList.js'),
 //simple errHandler
     errHandler = require('./scripts/errHandler/errHandler.js'),

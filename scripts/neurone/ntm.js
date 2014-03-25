@@ -4,7 +4,7 @@
 
 var message = require('../message'),
     client = require('./client'),
-    file = require('../fs/fs.js'),
+    file = require('../fs/file.js'),
     configure = require('../configure/configure.js'),
     net = require('net');
 
