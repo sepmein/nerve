@@ -1,0 +1,12 @@
+{
+  "name": "NerveProject",
+  "version": "0.0.1",
+  "main": "index.html",
+  "dependencies": {
+    "nedb": "^0.10.4",
+    "underscore": "^1.6.0"
+  },
+  "window": {
+    "toolbar": true
+  }
+}
