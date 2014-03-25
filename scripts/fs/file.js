@@ -57,10 +57,6 @@ file.judger = function (fo, fileHandler, dirHandler, errHandler) {
         }
     });
 };
-//given a rootPath, create some relativePath in it
-file.mkdir = function (rootPath, relativePath, callback) {
-    //while (relativePath)
-};
 
 file.addPath = function () {
 };
@@ -87,5 +83,8 @@ file.recursive = function recursive(fo, errHandler, next) {
             });
         }, errHandler);
 };
+
+//create dir
+file.mkdirp = require('mkdirp');
 
 module.exports = file;
