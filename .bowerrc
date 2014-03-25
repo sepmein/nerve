@@ -1,6 +1,3 @@
 {
-    "directory":"libs",
-    "dependencies": {
-        "angular":"~1.2.16"
-    }
+    "directory":"libs"
 }
