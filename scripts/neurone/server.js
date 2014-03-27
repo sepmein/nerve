@@ -19,7 +19,6 @@ server.start = function (listener, port) {
 };
 
 server.listener = function (s) {
-    console.log('asdfasdfasdfafdf');
     s.on('connect', function (a, b) {
 //        console.log(a, b);
     });
@@ -42,7 +41,7 @@ var chunkCount = 0;
 server.onData = function (socket, chunk) {
     if (server.onStartSignal(chunk)) {
         socket.pause();
-        console.log(socket);
+        //console.log(socket);
         console.log('[server] on start');
         try {
             //slice signal
@@ -64,15 +63,16 @@ server.onData = function (socket, chunk) {
 //                ws.on('drain',function(){
 //                    console.log('ws drained');
 //                });
-                socket.resume();
-
+                if(socket._ws !== null){
+                    socket.resume();
+                }
             });
     } else if (server.onEndSignal(chunk)) {
         socket.pause();
         console.log('on end: -----');
         console.log(socket._ws);
         socket._ws.end(function () {
-            delete socket._ws;
+            socket._ws = null;
             console.log('end:');
             console.log(socket._ws);
             socket.resume();
@@ -82,6 +82,8 @@ server.onData = function (socket, chunk) {
 //        console.log(++chunkCount);
 //        console.log('buffer[0]:' + chunk[0]);
         socket._ws.write(chunk);
+//        console.log(1);
+
     }
 };
 

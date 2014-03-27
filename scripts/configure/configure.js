@@ -32,7 +32,7 @@ var configure = {
     net: {
         port: 8124
     },
-    concurrent: 200,
+    concurrent: 1,
     receiveFolder: 'F:\\sepmein\\receive\\'
 };
 
