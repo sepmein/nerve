@@ -95,11 +95,10 @@ server.onStartSignal = function (b) {
 
 server.onEndSignal = function (b) {
     //b.toString === '##Ntm End##\n', safer version
-    return ((b.length === 12 &&
-        b[0] === 35 && b[1] === 35 && b[2] === 78 && b[3] === 116 && b[4] === 109 && b[5] === 32
+    return (b[0] === 35 && b[1] === 35 && b[2] === 78 && b[3] === 116 && b[4] === 109 && b[5] === 32
         && b[6] === 69 && b[7] === 110 && b[8] === 100 && b[9] === 35 && b[10] === 35
         && b[11] === 10
-        ));
+        );
 };
 
 module.exports = server;

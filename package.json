@@ -2,7 +2,7 @@
     "name": "NerveProject",
     "description": "a file transfer system",
     "repository": "https://github.com/sepmein/nerve.git",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "main": "index.html",
     "dependencies": {
         "nedb": "^0.10.4",

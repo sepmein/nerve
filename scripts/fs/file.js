@@ -42,7 +42,7 @@ file.readFile = function (fo) {
 file.judger = function (fo, fileHandler, dirHandler, errHandler) {
     var path = fo.path;
     //console.log(path);
-    fs.stat(path, function (err, stats) {
+    fs.lstat(path, function (err, stats) {
         if (!err) {
             if (stats.isFile()) {
                 fo.size = stats.size;
