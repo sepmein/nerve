@@ -16,7 +16,7 @@ var Ntm = function () {
 Ntm.prototype.transmit = function (fo) {
     var socket = this.socket,
         _this = this;
-    client.sendStartSignal(socket, trans);
+    client.sendStartSignal(socket, fo, trans);
 
     function trans() {
         var rs = file.readFile(fo);
@@ -25,7 +25,7 @@ Ntm.prototype.transmit = function (fo) {
     }
 
     function onTransmitEnd() {
-        console.log('transmit end');
+//        console.log('transmit end');
         client.sendEndSignal(socket, function () {
             message.emit('[ntm].available', _this.id);
         });

@@ -32,7 +32,8 @@ var configure = {
     net: {
         port: 8124
     },
-    concurrent: 200
+    concurrent: 200,
+    receiveFolder: 'F:\\sepmein\\receive\\'
 };
 
 module.exports = configure;

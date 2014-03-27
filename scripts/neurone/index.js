@@ -24,9 +24,9 @@ N.prototype.init = function (concurrent) {
     //if ntm done its job, push it back to the available list
     //and the Neurone should check if there is a file need to be transferred
     message.on('[ntm].available', function (id) {
-        console.log(id);
+//        console.log(id);
         _this.availableNtms.push(id);
-        console.log('_this.availableNtms： ' + _this.availableNtms.length);
+//        console.log('_this.availableNtms： ' + _this.availableNtms.length);
         if (_this.hasPending()) {
             var fo = _this.pendingList.shift();
             _this.transmit(fo);

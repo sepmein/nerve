@@ -6,9 +6,9 @@
 var client = {};
 //client
 
-client.sendStartSignal = function (socket, next) {
+client.sendStartSignal = function (socket, header, next) {
     var startString = '##Ntm Start##\n';
-//    startString += JSON.stringify(header);
+    startString += JSON.stringify(header);
     var startBuffer = new Buffer(startString);
     socket.write(startBuffer, function () {
         next();
@@ -18,7 +18,7 @@ client.sendStartSignal = function (socket, next) {
 client.sendEndSignal = function (socket, next) {
     var endBuffer = new Buffer('##Ntm End##\n');
     socket.write(endBuffer, function () {
-        next()
+        next();
     });
 };
 

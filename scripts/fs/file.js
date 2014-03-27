@@ -5,7 +5,9 @@
  */
 // node fs
 var fs = require('fs'),
+    mkdirp = require('mkdirp'),
     file = {};
+
 file.readDir = function (fo, next, errHandler) {
     var path = fo.path;
     fs.readdir(path, function (err, files) {
@@ -27,16 +29,15 @@ file.readDir = function (fo, next, errHandler) {
 
 file.readFile = function (fo) {
     var path = fo.path;
-    var rs = fs.createReadStream(path);
-    return rs;
+    return fs.createReadStream(path);
 };
 
-file.encodeHeader = function (rs) {
-    var options = rs._attributes,
-        p = JSON.stringify(options);
-    p += '\n\n';
-    rs.unshift(new Buffer(p));
-};
+//file.encodeHeader = function (rs) {
+//    var options = rs._attributes,
+//        p = JSON.stringify(options);
+//    p += '\n\n';
+//    rs.unshift(new Buffer(p));
+//};
 
 file.judger = function (fo, fileHandler, dirHandler, errHandler) {
     var path = fo.path;
@@ -67,24 +68,46 @@ file.addRootPath = function (file) {
 };
 
 file.addRelativePath = function (file) {
-    return file._relativePath = file.path.slice((file._rootPath).length);
+    var relativePathWithFileName = file.path.slice((file._rootPath).length);
+//    console.log(relativePathWithFileName);
+    if (relativePathWithFileName.lastIndexOf('\\') === -1) {
+        file._relativePath = '';
+    } else {
+        file._relativePath = relativePathWithFileName.slice(0, relativePathWithFileName.lastIndexOf('\\') + 1);
+    }
+//    console.log('relative path')
+//    console.log(file);
+    return file;
 };
 
 //api port to html5 fs
-file.recursive = function recursive(fo, errHandler, next) {
+file.recursive = function recursive(fo, onError, next) {
     file.judger(fo, function (fo) {
+            file.addRelativePath(fo);
             next(fo);
         },
         function (fo) {
             file.readDir(fo, function (fom) {
-                recursive(fom, errHandler, next);
+                recursive(fom, onError, next);
             }, function (err) {
-                errHandler(err);
+                onError(err);
             });
-        }, errHandler);
+        }, onError);
 };
 
 //create dir
-file.mkdirp = require('mkdirp');
+file.mkdirp = function (path, onError, next) {
+    mkdirp(path, function (err) {
+        if (!err) {
+            next();
+        } else {
+            onError(err);
+        }
+    })
+};
+
+file.createWriteStream = function (f) {
+    return fs.createWriteStream(f);
+};
 
 module.exports = file;
