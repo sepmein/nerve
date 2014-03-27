@@ -11,5 +11,8 @@
     },
     "window": {
         "toolbar": true
+    },
+    "devDependencies": {
+        "should": "^3.2.0-beta1"
     }
 }
