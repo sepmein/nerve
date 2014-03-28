@@ -32,16 +32,16 @@ var transferList = [],
     neurone = new Neurone(transferList),
     tl = new TransferList(transferList);
 
-neurone.init(configure.concurrent);
+
 
 // prevent default behavior from changing page on dropped file
 window.ondragover = function (e) {
     e.preventDefault();
-    return false
+    return false;
 };
 window.ondrop = function (e) {
     e.preventDefault();
-    return false
+    return false;
 };
 
 var holder = document.getElementById('holder');
@@ -71,6 +71,10 @@ holder.ondrop = function (event) {
  * */
 
 server.start(server.listener, configure.net.port);
+
+process.nextTick(function(){
+    neurone.init(configure.concurrent);
+});
 
 process.on('uncaughtException', function (err) {
     console.log(err);

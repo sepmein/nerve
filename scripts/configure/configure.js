@@ -30,10 +30,10 @@
 
 var configure = {
     net: {
-        port: 8124
+        port: 23990
     },
-    concurrent: 1,
-    receiveFolder: 'F:\\sepmein\\receive\\'
+    concurrent: 20,
+    receiveFolder: '../receive/'
 };
 
 module.exports = configure;

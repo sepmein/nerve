@@ -5,17 +5,18 @@
  */
 // node fs
 var fs = require('fs'),
+    path = require('path'),
     mkdirp = require('mkdirp'),
     file = {};
 
 file.readDir = function (fo, next, errHandler) {
-    var path = fo.path;
-    fs.readdir(path, function (err, files) {
+    var _path = fo.path;
+    fs.readdir(_path, function (err, files) {
         //console.log(files);
         if (!err) {
             for (var i = files.length - 1; i >= 0; i--) {
                 var fom = {};
-                fom.path = fo.path + '\\' + files[i];
+                fom.path = path.join(fo.path, files[i]);
                 fom.name = files[i];
                 fom._rootPath = fo._rootPath;
                 //console.log(fom);
@@ -28,8 +29,8 @@ file.readDir = function (fo, next, errHandler) {
 };
 
 file.readFile = function (fo) {
-    var path = fo.path;
-    return fs.createReadStream(path);
+    var _path = fo.path;
+    return fs.createReadStream(_path);
 };
 
 //file.encodeHeader = function (rs) {
@@ -40,9 +41,9 @@ file.readFile = function (fo) {
 //};
 
 file.judger = function (fo, fileHandler, dirHandler, errHandler) {
-    var path = fo.path;
+    var _path = fo.path;
     //console.log(path);
-    fs.lstat(path, function (err, stats) {
+    fs.lstat(_path, function (err, stats) {
         if (!err) {
             if (stats.isFile()) {
                 fo.size = stats.size;

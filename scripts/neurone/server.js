@@ -72,7 +72,7 @@ server.onData = function (socket, chunk) {
         console.log('on end: -----');
         console.log(socket._ws);
         socket._ws.end(function () {
-            socket._ws = null;
+            //socket._ws = null;
             console.log('end:');
             console.log(socket._ws);
             socket.resume();
