@@ -30,7 +30,8 @@ var should = require('should');
 
 var user = {
     name: 'spencer'
-}
+};
+
 describe('First test', function () {
     it('user\'s name should be spencer', function () {
         user.should.have.property('name', 'spencer');

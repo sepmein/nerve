@@ -51,38 +51,42 @@ server.onData = function (socket, chunk) {
             console.log(e);
         }
 
-        console.log('fileAttributes:-----------');
-        console.log(fileAttributes);
+//        console.log('fileAttributes:-----------');
+//        console.log(fileAttributes);
         file.mkdirp(path.join(receiveFolder, fileAttributes._relativePath),
             onError,
             function () {
-                console.log(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
-                socket._ws = file.createWriteStream(path.join(receiveFolder + fileAttributes._relativePath + fileAttributes.name));
-                console.log('create:');
-                console.log(socket._ws);
+//                console.log(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
+                socket._ws = file.createWriteStream(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
+//                console.log('create:');
+//                console.log(socket._ws);
 //                ws.on('drain',function(){
 //                    console.log('ws drained');
 //                });
-                if(socket._ws !== null){
+                if (socket._ws !== null) {
+                    console.log('on start log socket');
+                    console.log(socket._ws);
+                    console.log(socket);
                     socket.resume();
                 }
             });
     } else if (server.onEndSignal(chunk)) {
         socket.pause();
-        console.log('on end: -----');
-        console.log(socket._ws);
+//        console.log('on end: -----');
+//        console.log(socket._ws);
         socket._ws.end(function () {
-            //socket._ws = null;
+            console.log(socket._ws);
+            socket._ws = null;
             console.log('end:');
             console.log(socket._ws);
             socket.resume();
         });
-        console.log('[server] on end');
+//        console.log('[server] on end');
     } else {
 //        console.log(++chunkCount);
 //        console.log('buffer[0]:' + chunk[0]);
-        socket._ws.write(chunk);
-//        console.log(1);
+//        socket._ws.write(chunk);
+        console.log(1);
 
     }
 };

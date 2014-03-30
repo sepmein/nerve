@@ -33,7 +33,6 @@ var transferList = [],
     tl = new TransferList(transferList);
 
 
-
 // prevent default behavior from changing page on dropped file
 window.ondragover = function (e) {
     e.preventDefault();
@@ -57,8 +56,8 @@ holder.ondrop = function (event) {
     event.preventDefault();
     for (var i = 0; i < event.dataTransfer.files.length; ++i) {
         var fo = event.dataTransfer.files[i];
+//        console.log(fo);
         file.addRootPath(fo);
-        //console.log(fo);
         file.recursive(fo, errHandler, function (fo) {
             tl.add(fo);
         });
@@ -72,7 +71,7 @@ holder.ondrop = function (event) {
 
 server.start(server.listener, configure.net.port);
 
-process.nextTick(function(){
+process.nextTick(function () {
     neurone.init(configure.concurrent);
 });
 

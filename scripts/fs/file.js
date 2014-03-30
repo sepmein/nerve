@@ -64,21 +64,24 @@ file.addPath = function () {
 };
 
 file.addRootPath = function (file) {
-    file._rootPath = file.path.substring(0, file.path.lastIndexOf('\\') + 1);
+    file._rootPath = path.dirname(file.path);
     return file;
 };
 
 file.addRelativePath = function (file) {
-    var relativePathWithFileName = file.path.slice((file._rootPath).length);
+    var relativePathWithFileName = path.relative(file._rootPath, file.path);
+//    file.path.slice((file._rootPath).length);
 //    console.log(relativePathWithFileName);
-    if (relativePathWithFileName.lastIndexOf('\\') === -1) {
-        file._relativePath = '';
-    } else {
-        file._relativePath = relativePathWithFileName.slice(0, relativePathWithFileName.lastIndexOf('\\') + 1);
-    }
+    file._relativePath = path.dirname(relativePathWithFileName);
+    return file;
+//    if (relativePathWithFileName.lastIndexOf('\\') === -1) {
+//        file._relativePath = '';
+//    } else {
+//        file._relativePath = relativePathWithFileName.slice(0, relativePathWithFileName.lastIndexOf('\\') + 1);
+//    }
 //    console.log('relative path')
 //    console.log(file);
-    return file;
+//    return file;
 };
 
 //api port to html5 fs
