@@ -9,30 +9,28 @@ var net = require('net'),
 
 var server = {};
 
-server.start = function (listener, port) {
+server.start = function (addListener, port) {
     var server = net.createServer(
-        function (connection) {
-            connection._ws = null;
-            listener(connection);
+        function (socket) {
+//            connection._ws = null;
+            addListener(socket);
         });
     server.listen(port);
+    return server;
 };
 
-server.listener = function (s) {
-    s.on('connect', function (a, b) {
-//        console.log(a, b);
-    });
-    s.on('data', function (chunk) {
-            server.onData(s, chunk);
+server.addListener = function (socket) {
+    socket.on('data', function (chunk) {
+            server.onData(socket, chunk);
         }
     );
-    s.on('error', function (e) {
+    socket.on('error', function (e) {
         console.log(e);
     });
-    s.on('end', function () {
+    socket.on('end', function () {
 //        console.log('end');
     });
-    s.on('pipe', function () {
+    socket.on('pipe', function () {
 //        console.log('piping start.');
     });
 };
@@ -76,9 +74,9 @@ server.onData = function (socket, chunk) {
 //        console.log(socket._ws);
         socket._ws.end(function () {
             console.log(socket._ws);
-            socket._ws = null;
+            delete socket._ws;
             console.log('end:');
-            console.log(socket._ws);
+//            console.log(socket._ws);
             socket.resume();
         });
 //        console.log('[server] on end');
@@ -101,10 +99,10 @@ server.onStartSignal = function (b) {
 
 server.onEndSignal = function (b) {
     //b.toString === '##Ntm End##\n', safer version
-    return (b[0] === 35 && b[1] === 35 && b[2] === 78 && b[3] === 116 && b[4] === 109 && b[5] === 32
+    return (b.length === 12 &&
+        b[0] === 35 && b[1] === 35 && b[2] === 78 && b[3] === 116 && b[4] === 109 && b[5] === 32
         && b[6] === 69 && b[7] === 110 && b[8] === 100 && b[9] === 35 && b[10] === 35
-        && b[11] === 10
-        );
+        && b[11] === 10);
 };
 
 module.exports = server;

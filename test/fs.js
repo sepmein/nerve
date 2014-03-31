@@ -72,7 +72,7 @@ describe('Nerve File Module', function () {
         it('[OSX version] should have a relative path if arguments is a file', function (done) {
             var fileObject = {
                 _rootPath: '~/sepmein/',
-                path: '~/sepmein/nerve'
+                path: '~/sepmein/nerve/spencer'
             }
 
             var added = file.addRelativePath(fileObject);
@@ -82,7 +82,7 @@ describe('Nerve File Module', function () {
         it('[Windows version] should have a relative path if arguments is a file', function (done) {
             var fileObject = {
                 _rootPath: 'f:/sepmein/',
-                path: 'f:/sepmein/nerve'
+                path: 'f:/sepmein/nerve/asdfasdf'
             }
 
             var added = file.addRelativePath(fileObject);
@@ -95,15 +95,15 @@ describe('Nerve File Module', function () {
                 _rootPath: 'f:/sepmein/blabla'
             };
             var added = file.addRelativePath(fileObject);
-            added._relativePath.should.be.equal('');
+            added._relativePath.should.be.equal('.');
             done();
         });
     });
     describe('addRootPath', function () {
 
     });
-    describe('recursive', function(){
-        it('')
-    })
+//    describe('recursive', function(){
+//        it('')
+//    })
 
 });

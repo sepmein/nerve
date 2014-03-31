@@ -69,7 +69,7 @@ holder.ondrop = function (event) {
  * server
  * */
 
-server.start(server.listener, configure.net.port);
+server.start(server.addListener, configure.net.port);
 
 process.nextTick(function () {
     neurone.init(configure.concurrent);
