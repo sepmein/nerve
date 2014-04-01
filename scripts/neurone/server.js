@@ -47,11 +47,13 @@ server.addListener = function (socket) {
   * 3. 根据头信息，创建一个fs.writeStream
   * 4. 将文件信息write进ws
   * 5. 检测到endSignal后，关闭ws
+  * 重要的潜在问题：startSignal & endSignal的buffer可能都不在一个chunk里!
+  *
+  * 或者建立一个duplex stream，当然，算法应该是相同的。
 * */
-var chunkCount = 0;
 server.onData = function (socket, chunk) {
 //    FIXME
-    console.log('ondata');
+    console.log('on data');
     if (server.onStartSignal(chunk)) {
         socket.pause();
         //console.log(socket);
