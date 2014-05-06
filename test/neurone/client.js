@@ -10,3 +10,7 @@ describe('Neurone Client', function () {
 });
 
 
+var stream = require('stream');
+
+var duplex = stream.Duplex;
+
