@@ -10,6 +10,7 @@ var message = require('../message'),
 
 var Ntm = function () {
     this.socket = net.connect({port: configure.net.port});
+    this.socket.setNoDelay(false);
     this.id = Math.random().toString(36).slice(12);
 };
 

@@ -37,7 +37,7 @@ N.prototype.init = function (concurrent) {
 
     //listen for the 'add' event from the transfer list
     message.on('[transferList].add', function (fo) {
-        //console.log('[Neurone].listener.called');
+        //console.log('[Neurone].addListener.called');
         if (_this.isAvailable()) {
             _this.transmit(fo);
         } else {
@@ -45,7 +45,6 @@ N.prototype.init = function (concurrent) {
         }
     });
 };
-
 
 //create a new ntm
 //push it to availableNtms
