@@ -12,28 +12,23 @@ var server = {};
 server.start = function (listener, port) {
     var server = net.createServer(
         function (connection) {
-            connection._ws = null;
+            console.log('CONNECTED!!!!!!!!!!!!!!!!!!!!!!');
+            //connection._ws = null;
             listener(connection);
         });
     server.listen(port);
 };
 
-server.listener = function (s) {
-    s.on('connect', function (a, b) {
-//        console.log(a, b);
-    });
-    s.on('data', function (chunk) {
-            server.onData(s, chunk);
+server.listener = function (socket) {
+    socket.on('data', function (chunk) {
+            server.onData(socket, chunk);
         }
     );
-    s.on('error', function (e) {
+    socket.on('error', function (e) {
         console.log(e);
     });
-    s.on('end', function () {
+    socket.on('end', function () {
 //        console.log('end');
-    });
-    s.on('pipe', function () {
-//        console.log('piping start.');
     });
 };
 
@@ -41,6 +36,7 @@ var chunkCount = 0;
 server.onData = function (socket, chunk) {
     if (server.onStartSignal(chunk)) {
         socket.pause();
+        socket._id = Math.random().toString(36).slice(8);
         //console.log(socket);
         console.log('[server] on start');
         try {
@@ -75,6 +71,7 @@ server.onData = function (socket, chunk) {
 //        console.log('on end: -----');
 //        console.log(socket._ws);
         socket._ws.end(function () {
+            console.log(socket._id);
             console.log(socket._ws);
             socket._ws = null;
             console.log('end:');
@@ -87,6 +84,7 @@ server.onData = function (socket, chunk) {
 //        console.log('buffer[0]:' + chunk[0]);
 //        socket._ws.write(chunk);
         console.log(1);
+        console.log('receiving data, socket id is: '+ socket._id);
 
     }
 };
