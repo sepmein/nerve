@@ -14,22 +14,20 @@ var Ntm = function () {
     this.id = Math.random().toString(36).slice(12);
 };
 
-Ntm.prototype.transmit = function (fo) {
+Ntm.prototype.transmit = function (fileObject) {
     var socket = this.socket,
         _this = this;
-    client.sendStartSignal(socket, fo, trans);
+    client.sendStartSignal(socket, fileObject, startTransmit);
 
-    function trans() {
-        var rs = file.readFile(fo);
-        rs.pipe(socket, {end: false});
-        rs.on('close', onTransmitEnd)
+    function startTransmit() {
+        var readStream = file.readFile(fileObject);
+        readStream.pipe(socket, {end: false});
+        readStream.on('close', onTransmitEnd);
     }
 
     function onTransmitEnd() {
 //        console.log('transmit end');
-        client.sendEndSignal(socket, function () {
-            message.emit('[ntm].available', _this.id);
-        });
+        message.emit('[ntm].available', _this.id);
     }
 
 //    //createReadStream

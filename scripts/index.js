@@ -12,12 +12,12 @@ var file = require('./scripts/fs/file.js'),
     configure = require('./scripts/configure/configure.js'),
 //net
     N = require('./scripts/neurone'),
-    client = N.client,
+//    client = N.client,
     server = N.server,
-    Neurone = N.Neurone,
+    Neurone = N.Neurone;
 
 //stream
-    stream = require('./scripts/streams/streams.js');
+//    stream = require('./scripts/streams/streams.js');
 
 /**
  * debug
@@ -55,11 +55,11 @@ holder.ondragend = function () {
 holder.ondrop = function (event) {
     event.preventDefault();
     for (var i = 0; i < event.dataTransfer.files.length; ++i) {
-        var fo = event.dataTransfer.files[i];
-//        console.log(fo);
-        file.addRootPath(fo);
-        file.recursive(fo, errHandler, function (fo) {
-            tl.add(fo);
+        var fileObject = event.dataTransfer.files[i];
+        console.log(fileObject);
+        file.addRootPath(fileObject);
+        file.recursive(fileObject, errHandler, function (fileObject) {
+            tl.add(fileObject);
         });
     }
     return false;
