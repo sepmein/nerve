@@ -51,7 +51,7 @@ server.addListener = function (socket) {
  * 或者建立一个duplex stream，当然，算法应该是相同的。
  * */
 server.onData = function (socket, chunk) {
-
+    console.log(chunk.toString());
     var startSignal = server.onStartSignal(chunk),
         slicedBuffer, lastIndex, bufferConcated;
 //        , fileLength, fileLengthLeft
