@@ -55,18 +55,26 @@ server.onData = function (socket, chunk) {
     var startSignal = server.onStartSignal(chunk);
     if (!startSignal) {
         if (socket._wsPoint) {
+//            socket.pause();
             socket._ws[socket._wsPoint].write(chunk);
+//            socket.resume();
         } else {
             onError(new Error('[ntm server] {onData} if no start signal, it should have a writable stream or left chunk'));
         }
     } else {
 //            如果之前已经有过writeStream
+        console.log(chunk.toString());
         socket.pause();
         if (socket._wsPoint) {
-            socket._ws[socket._wsPoint].end();
+            socket._ws[socket._wsPoint].end(function () {
+                delete socket._ws[socket._wsPoint];
+            });
+        } else {
+            onError(new Error('[ntm server] {onData} no write stream point'));
         }
         createFile(socket, chunk, function (wsId) {
             socket._wsPoint = wsId;
+            console.log(socket._wsPoint);
             socket.resume();
         });
     }
@@ -86,6 +94,9 @@ function createFile(socket, chunk, callback) {
             fileAttributes = JSON.parse(optionString);
     } catch (e) {
         onError(e);
+        console.log('parse json error');
+        console.log('chunk', chunk.toString());
+        console.log('socket: ', socket);
     }
 
 //    console.log('fileAttributes:-----------');
@@ -95,9 +106,11 @@ function createFile(socket, chunk, callback) {
         onError,
         function () {
             //                console.log(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
-            var wsId = Math.random().toString(36).slice(8);
+            var wsId = Math.random().toString(36).slice(6);
             socket._ws[wsId] = file.createWriteStream(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
-            callback(wsId);
+            socket._ws[wsId].on('open', function () {
+                callback(wsId);
+            });
         });
 }
 
