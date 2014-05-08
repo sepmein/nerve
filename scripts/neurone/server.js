@@ -51,28 +51,34 @@ server.addListener = function (socket) {
  * 或者建立一个duplex stream，当然，算法应该是相同的。
  * */
 server.onData = function (socket, chunk) {
-    console.log(chunk.toString());
+//    console.log(chunk.toString());
     var startSignal = server.onStartSignal(chunk);
     if (!startSignal) {
-        if (socket._ws) {
-            socket._ws.write(chunk);
+        if (socket._wsPoint) {
+            socket._ws[socket._wsPoint].write(chunk);
         } else {
             onError(new Error('[ntm server] {onData} if no start signal, it should have a writable stream or left chunk'));
         }
     } else {
-        if (socket._ws) {
 //            如果之前已经有过writeStream
-            socket.pause();
-            socket._ws.end(function () {
-                socket.resume();
-            });
+        socket.pause();
+        if (socket._wsPoint) {
+            socket._ws[socket._wsPoint].end();
         }
-        createFile(socket, chunk);
+        createFile(socket, chunk, function (wsId) {
+            socket._wsPoint = wsId;
+            socket.resume();
+        });
     }
+    console.log(socket._ws);
+    console.log(socket._wsPoint);
+
 };
 
-function createFile(socket, chunk) {
-    socket.pause();
+function createFile(socket, chunk, callback) {
+    if (!socket._ws) {
+        socket._ws = {};
+    }
     socket._id = Math.random().toString(36).slice(8);
     try {
         //slice signal
@@ -82,22 +88,16 @@ function createFile(socket, chunk) {
         onError(e);
     }
 
-    console.log('fileAttributes:-----------');
-    console.log(fileAttributes);
+//    console.log('fileAttributes:-----------');
+//    console.log(fileAttributes);
 
     file.mkdirp(path.join(receiveFolder, fileAttributes._relativePath),
         onError,
         function () {
             //                console.log(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
-            socket._ws = file.createWriteStream(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
-            if (socket._ws !== null) {
-//                console.log('on start log socket');
-//                console.log(socket._ws);
-//                console.log(socket);
-                socket.resume();
-            } else {
-                onError(new Error('[ntm server] {createFile} socket._ws should not be null'))
-            }
+            var wsId = Math.random().toString(36).slice(8);
+            socket._ws[wsId] = file.createWriteStream(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
+            callback(wsId);
         });
 }
 
