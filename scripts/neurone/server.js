@@ -52,75 +52,31 @@ server.addListener = function (socket) {
  * */
 server.onData = function (socket, chunk) {
     console.log(chunk.toString());
-    var startSignal = server.onStartSignal(chunk),
-        slicedBuffer, lastIndex, bufferConcated;
-//        , fileLength, fileLengthLeft
+    var startSignal = server.onStartSignal(chunk);
     if (!startSignal) {
         if (socket._ws) {
             socket._ws.write(chunk);
-        } else if (socket.leftChunk) {
-            bufferConcated = Buffer.concat([socket.leftChunk, chunk]);
-            createFile(socket, bufferConcated);
         } else {
             onError(new Error('[ntm server] {onData} if no start signal, it should have a writable stream or left chunk'));
         }
     } else {
-        if (startSignal[0] !== 0) {
-            /*"first position of the start signal string is not 0"
-             * 前面chunk有遗留数据*/
-            if (socket.leftChunk) {
-                slicedBuffer = chunk.slice(0, startSignal[0]);
-                bufferConcated = Buffer.concat([socket.leftChunk, slicedBuffer]);
-                createFile(bufferConcated, true);
-
-                lastIndex = startSignal[0];
-            } else {
-                onError(new Error('[ntm server] {onData} 如果包头未从0位开始，那应该有前面的chunk留下'));
-            }
-        } else {
-            lastIndex = 0;
+        if (socket._ws) {
+//            如果之前已经有过writeStream
+            socket.pause();
+            socket._ws.end(function () {
+                socket.resume();
+            });
         }
-
-        for (var i = 0; i < startSignal.length; i++) {
-            var metaEndSignal = server.onMetaEndSignal(chunk, lastIndex);
-            if (metaEndSignal) {
-//              meta信息在一个完整的包里
-//                解码meta
-                var meta = chunk.slice(lastIndex + 14, metaEndSignal);
-                try {
-                    var fileAttributes = JSON.parse(meta);
-                } catch (e) {
-                    onError(e);
-                }
-                if (fileAttributes.size) {
-                    if (fileAttributes.size + metaEndSignal + 13 > chunk.size) {
-//                        如果文件大过一个包的长度
-                        createFile(socket, chunk.slice(startSignal[i]));
-                    } else {
-//                        如果文件小于一个包的长度
-                        var wholeFileChunk = chunk.slice(startSignal[i], startSignal[i + 1]);
-                        console.log('metaEndSignal + 13 + fileAttributes.size === startSignal[i + 1] :: ' + metaEndSignal + 13 + fileAttributes.size === startSignal[i + 1]);
-                        createFile(socket, wholeFileChunk, true);
-                    }
-                } else {
-                    onError(new Error('[ntm server] {onData} 文件没有size信息'));
-                }
-            } else {
-//              meta信息不在一个完整的包里，将该剩余信息切下，留存备用
-                socket.leftChunk = chunk.slice(startSignal[i]);
-            }
-        }
+        createFile(socket, chunk);
     }
 };
 
-function createFile(socket, chunk, wholeChunkFlag) {
+function createFile(socket, chunk) {
     socket.pause();
     socket._id = Math.random().toString(36).slice(8);
-    var endPosition = server.onMetaEndSignal(chunk, 0),
-        chunkLeft = chunk.slice(endPosition + 13);
     try {
         //slice signal
-        var optionString = chunk.slice(14, endPosition),
+        var optionString = chunk.slice(14),
             fileAttributes = JSON.parse(optionString);
     } catch (e) {
         onError(e);
@@ -135,17 +91,10 @@ function createFile(socket, chunk, wholeChunkFlag) {
             //                console.log(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
             socket._ws = file.createWriteStream(path.join(receiveFolder, fileAttributes._relativePath, fileAttributes.name));
             if (socket._ws !== null) {
-                console.log('on start log socket');
-                console.log(socket._ws);
-                console.log(socket);
-                if (wholeChunkFlag) {
-                    socket._ws.end(chunkLeft, function () {
-                        socket.resume();
-                    });
-                } else {
-                    socket._ws.write(chunkLeft);
-                    socket.resume();
-                }
+//                console.log('on start log socket');
+//                console.log(socket._ws);
+//                console.log(socket);
+                socket.resume();
             } else {
                 onError(new Error('[ntm server] {createFile} socket._ws should not be null'))
             }
@@ -153,27 +102,13 @@ function createFile(socket, chunk, wholeChunkFlag) {
 }
 
 server.onStartSignal = function (b) {
+    var result = false;
     //b.toString === '##Ntm Start##\n', safer version
-    var result = [];
-    for (var i = 0; i < b.length; i++) {
-        if (b[i] === 35 && b[i + 1] === 35 && b[i + 2] === 78 && b[i + 3] === 116 && b[i + 4] === 109 && b[i + 5] === 32 && b[i + 6] === 83 && b[i + 7] === 116 && b[i + 8] === 97 && b[i + 9] === 114 && b[i + 10] === 116 && b[i + 11] === 35 && b[i + 12] === 35 && b[i + 13 ] === 10) {
-            console.log('[ntm server] {onStartSignal} start signal found');
-            result.push(i);
-        }
+    if (b[0] === 35 && b[1] === 35 && b[2] === 78 && b[3] === 116 && b[4] === 109 && b[5] === 32 && b[6] === 83 && b[7] === 116 && b[8] === 97 && b[9] === 114 && b[10] === 116 && b[11] === 35 && b[12] === 35 && b[13] === 10) {
+        console.log('[ntm server] {onStartSignal} start signal found');
+        result = true;
     }
-    return result ? result : false;
-};
-
-server.onMetaEndSignal = function (b, startFrom) {
-    //b.toString === '##Meta End##\n';', safer version
-    var result;
-    for (var i = startFrom; i < b.length; i++) {
-        if (b[i] === 35 && b[i + 1] === 35 && b[i + 2] === 77 && b[i + 3] === 101 && b[i + 4] === 116 && b[i + 5] === 97 && b[i + 6] === 32 && b[i + 7] === 69 && b[i + 8] === 110 && b[i + 9] === 100 && b[i + 10] === 35 && b[i + 11] === 35 && b[i + 12] === 10) {
-            console.log('[ntm server] {onEndSignal} meta end signal found');
-            result = i;
-        }
-    }
-    return result ? result : false;
+    return result;
 };
 
 module.exports = server;
