@@ -24,7 +24,7 @@ server.addListener = function (socket) {
         server.onData(socket, chunk);
     });
     socket.on('error', function (e) {
-        console.log(e);
+        onError(e);
     });
     socket.on('end', function () {
         //        console.log('end');

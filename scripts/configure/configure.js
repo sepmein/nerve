@@ -32,7 +32,7 @@ var configure = {
     net: {
         port: 23990
     },
-    concurrent: 1,
+    concurrent: 100,
     receiveFolder: '../receive/'
 };
 
