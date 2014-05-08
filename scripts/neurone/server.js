@@ -156,11 +156,9 @@ server.onStartSignal = function (b) {
     //b.toString === '##Ntm Start##\n', safer version
     var result = [];
     for (var i = 0; i < b.length; i++) {
-        if (b[i] === 35 && b[i + 1] === 35) {
-            if (b[i + 2] === 78 && b[i + 3] === 116 && b[i + 4] === 109 && b[i + 5] === 32 && b[i + 6] === 83 && b[i + 7] === 116 && b[i + 8] === 97 && b[i + 9] === 114 && b[i + 0] === 116 && b[i + 1] === 35 && b[i + 2] === 35 && b[i + 3 ] === 10) {
-                console.log('[ntm server] {onStartSignal} start signal found');
-                result.push(i);
-            }
+        if (b[i] === 35 && b[i + 1] === 35 && b[i + 2] === 78 && b[i + 3] === 116 && b[i + 4] === 109 && b[i + 5] === 32 && b[i + 6] === 83 && b[i + 7] === 116 && b[i + 8] === 97 && b[i + 9] === 114 && b[i + 10] === 116 && b[i + 11] === 35 && b[i + 12] === 35 && b[i + 13 ] === 10) {
+            console.log('[ntm server] {onStartSignal} start signal found');
+            result.push(i);
         }
     }
     return result ? result : false;
@@ -170,11 +168,9 @@ server.onMetaEndSignal = function (b, startFrom) {
     //b.toString === '##Meta End##\n';', safer version
     var result;
     for (var i = startFrom; i < b.length; i++) {
-        if (b[i] === 35 && b[i + 1] === 35) {
-            if (b[i + 2] === 77 && b[i + 3] === 101 && b[i + 4] === 116 && b[i + 5] === 97 && b[i + 6] === 32 && b[i + 7] === 69 && b[i + 8] === 110 && b[i + 9] === 100 && b[i + 10] === 35 && b[i + 11] === 35 && b[i + 12] === 10) {
-                console.log('[ntm server] {onEndSignal} meta end signal found');
-                result = i;
-            }
+        if (b[i] === 35 && b[i + 1] === 35 && b[i + 2] === 77 && b[i + 3] === 101 && b[i + 4] === 116 && b[i + 5] === 97 && b[i + 6] === 32 && b[i + 7] === 69 && b[i + 8] === 110 && b[i + 9] === 100 && b[i + 10] === 35 && b[i + 11] === 35 && b[i + 12] === 10) {
+            console.log('[ntm server] {onEndSignal} meta end signal found');
+            result = i;
         }
     }
     return result ? result : false;

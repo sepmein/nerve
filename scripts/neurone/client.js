@@ -11,7 +11,7 @@ client.sendStartSignal = function (socket, header, next) {
         metaEnd = '##Meta End##\n';
     startString += JSON.stringify(header);
     startString += '\n' + metaEnd;
-    console.log('send start signal: ' + startString);
+//    console.log('send start signal: ' + startString);
     var startBuffer = new Buffer(startString);
     socket.write(startBuffer, function () {
         next();
