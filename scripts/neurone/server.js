@@ -24,7 +24,7 @@ server.addListener = function (socket) {
         server.onData(socket, chunk);
     });
     socket.on('error', function (e) {
-        console.log(e);
+        onError(e);
     });
     socket.on('end', function () {
         //        console.log('end');
@@ -70,8 +70,8 @@ server.onData = function (socket, chunk) {
             socket.resume();
         });
     }
-    console.log(socket._ws);
-    console.log(socket._wsPoint);
+//    console.log(socket._ws);
+//    console.log(socket._wsPoint);
 
 };
 
@@ -105,7 +105,7 @@ server.onStartSignal = function (b) {
     var result = false;
     //b.toString === '##Ntm Start##\n', safer version
     if (b[0] === 35 && b[1] === 35 && b[2] === 78 && b[3] === 116 && b[4] === 109 && b[5] === 32 && b[6] === 83 && b[7] === 116 && b[8] === 97 && b[9] === 114 && b[10] === 116 && b[11] === 35 && b[12] === 35 && b[13] === 10) {
-        console.log('[ntm server] {onStartSignal} start signal found');
+//        console.log('[ntm server] {onStartSignal} start signal found');
         result = true;
     }
     return result;
