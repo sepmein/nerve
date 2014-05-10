@@ -63,7 +63,7 @@ server.onData = function (socket, chunk) {
         }
     } else {
 //            如果之前已经有过writeStream
-        console.log(chunk.toString());
+//        console.log(chunk.toString());
         socket.pause();
         if (socket._wsPoint) {
             socket._ws[socket._wsPoint].end(function () {
