@@ -18,6 +18,7 @@ var Ntm = function () {
 Ntm.prototype.transmit = function (fileObject) {
     var socket = this.socket,
         _this = this;
+//    socket.pause();
     client.sendStartSignal(socket, fileObject, startTransmit);
 
     function startTransmit() {
@@ -31,6 +32,7 @@ Ntm.prototype.transmit = function (fileObject) {
     function onTransmitEnd() {
 //        console.log('transmit end');
         message.emit('[ntm].available', _this.id);
+//        socket.resume();
     }
 
 };
