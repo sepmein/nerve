@@ -34,21 +34,14 @@ server.addListener = function (socket) {
     });
 };
 /*
- * ### 记一笔
- * 终于找到了错误的原因，从前一直认为，socket.write命令就能够向server发送一条信息。
- * 但是事实上，client端会将socket中的buffer缓存起来，等到达到一定的数量级后再向服务器端发送。
- * 导致，在服务器端connection.on('data')事件发生次数比预期低很多，而一个buffer也可能
- * 包含多个##Ntm Start##\n以及##Ntm End##\n
  * 下一步
  * TODO:
- * 1. 将一个chunk看作一个整体，在chunk中，任何事件都有可能发生；
- * 2. 在chunk中检测到startSignal之后，如何将头部信息与文件信息分离？
- * 3. 根据头信息，创建一个fs.writeStream
- * 4. 将文件信息write进ws
- * 5. 检测到endSignal后，关闭ws
- * 重要的潜在问题：startSignal & endSignal的buffer可能都不在一个chunk里!
+ * 1. 根据头信息，创建一个fs.writeStream
+ * 2. 将文件信息write进ws
+ * 3. 检测到endSignal后，关闭ws
+ * 潜在问题：由于后台建立writeStream的速度较慢，导致大量的tcp请求并发时。线性工作的代码无法正确运行。
+ * 下一步工作，改进代码的架构，用node传输文件是有可能比原生系统更快的
  *
- * 或者建立一个duplex stream，当然，算法应该是相同的。
  * */
 server.onData = function (socket, chunk) {
 //    console.log(chunk.toString());
